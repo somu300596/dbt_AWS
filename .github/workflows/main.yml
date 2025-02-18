@@ -31,8 +31,8 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2  # ✅ Uses built-in authentication
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}  # IAM Role ARN
-          aws-region: ${{ secrets.AWS_REGION }}  # AWS Region
+          role-to-assume: $ROLE_ARN  # IAM Role ARN
+          aws-region: $REGION  # AWS Region
 
       - name: Verify AWS Authentication
         run: aws sts get-caller-identity
@@ -44,7 +44,7 @@ jobs:
         run: |
           rm -rf ./IAC/root/.terraform
           terraform -chdir=./IAC/root init
-          terraform -chdir=./IAC/root plan -out="planfile" -var="env_var=[{\"name\":\"SNOWFLAKE_ACCOUNT\",\"value\":\"$SNOWFLAKE_ACCOUNT\"},{\"name\":\"SNOWFLAKE_USER\",\"value\":\"$SNOWFLAKE_USER\"},{\"name\":\"SNOWFLAKE_PASSWORD\",\"value\":\"$SNOWFLAKE_PASSWORD\"}]"
+          terraform -chdir=./IAC/root plan -out="planfile"
           terraform -chdir=./IAC/root apply -input=false --auto-approve "planfile"
           terraform -chdir=./IAC/root output -json > terraform_outputs.json
           cat terraform_outputs.json
