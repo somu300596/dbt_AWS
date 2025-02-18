@@ -46,13 +46,6 @@ module "ecs_task_execution_role" {
         "logs:PutLogEvents"
       ]
       Resource = ["*"]
-    },
-    {
-      Effect = "Allow"
-      Action = ["secretsmanager:GetSecretValue"]
-      Resource = [
-        "arn of secretsmanager"
-      ]
     }
   ]
 }
@@ -188,7 +181,6 @@ module "ecs" {
   memory             = var.memory 
   container_name     = var.ecs_container_name
   container_image    = module.ecr.repository_url != "" ? "${module.ecr.repository_url}:latest" : "amazonlinux:latest"  # Use the image from ECR if available
-  env_var            = var.env_var
   log_region         = var.aws_region
   log_group_name     = "${var.ecs_cluster_name}-logs" # Example: Generate a log group name dynamicallyww
   log_stream_prefix  = "ecs"
@@ -230,7 +222,7 @@ module "mwaa_env_sg" {
   source      = "../modules/SG"
   name        = var.security_group_name
   description = "Security group for MWAA environment"
-  vpc_id      = "vpc-05845776"
+  vpc_id      = "vpc-0b8a5a79d15588ed6"
 
   ingress_rules = {
     allow_https = {

@@ -33,15 +33,6 @@ variable "container_image" {
   type        = string
 }
 
-variable "env_var" {
-  description = "Environment variables for the task definition"
-  type        = list(object({
-    name      = string
-    #valueFrom = optional(string)
-    value     = optional(string)
-  }))
-}
-
 variable "log_group_name" {
   description = "The name of the CloudWatch log group"
   type        = string

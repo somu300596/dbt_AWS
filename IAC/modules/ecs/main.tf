@@ -22,12 +22,6 @@ resource "aws_ecs_task_definition" "this" {
       #   }
       #   if secret.valueFrom != null # Exclude secrets with no valueFrom...
       # ]
-      environment = [
-        for env_var in var.env_var : {
-          name  = env_var.name
-          value = env_var.value
-        }
-      ]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
