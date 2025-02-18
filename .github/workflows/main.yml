@@ -28,11 +28,15 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Setup AWS Credentials
-        run: |
-          echo "Setting up AWS credentials..."
-          export $(printf "AWS_ACCESS_KEY_ID=%s AWS_SECRET_ACCESS_KEY=%s AWS_SESSION_TOKEN=%s" $(aws sts assume-role-with-web-identity --role-arn $ROLE_ARN --role-session-name "GitHubRunner-${{ github.run_id }}" --web-identity-token ${{ secrets.GITHUB_OIDC_TOKEN }} --duration-seconds 3600 --query 'Credentials.[AccessKeyId,SecretAccessKey,SessionToken]' --region $REGION --output text))
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2  # ✅ Uses built-in authentication
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}  # IAM Role ARN
+          aws-region: ${{ secrets.AWS_REGION }}  # AWS Region
 
+      - name: Verify AWS Authentication
+        run: aws sts get-caller-identity
+        
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v2
 
